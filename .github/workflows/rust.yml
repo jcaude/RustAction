@@ -1,0 +1,45 @@
+name: Rust
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  CARGO_TERM_COLOR: always
+  VERSION: ${{ github.ref_name }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [ aarch64-unknown-linux-gnu, aarch64-apple-darwin ]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Update release version
+      run: |
+        sed "s/^version = \".*\"/version = \"${VERSION:1}\"/" Cargo.toml > .Cargo.toml
+        mv .Cargo.toml Cargo.toml
+
+    - name: Build
+      run: |
+        rustup target add ${{ matrix.os }}
+        cargo build --release --target ${{ matrix.os }}
+
+    - name: Rename artifact
+      run: |
+        mv target/release/hello target/release/hello-${{ matrix.os }}
+
+    - name: release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Hello ${{ github.ref_name }}
+        files: |
+          target/release/hello-${{ matrix.os }}
+
