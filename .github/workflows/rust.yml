@@ -23,7 +23,7 @@ jobs:
 
     - name: Install Rust
       uses: actions/setup-rust@v1
-      with: |
+      with:
         rust-version: stable
         cache: false
 
