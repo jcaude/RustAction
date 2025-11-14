@@ -2,8 +2,7 @@ name: Rust
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches: [ main ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -11,16 +10,22 @@ env:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    name: Build on ${{ matrix.os }}
+    runs-on: $${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ aarch64-unknown-linux-gnu, aarch64-apple-darwin ]
+        os: [ ubuntu-latest, macos-latest ]
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+
+    - name: Install Rust
+      uses: actions/setup-rust@v1
+      with: |
+        rust-version: stable
+	cache: false
 
     - name: Update release version
       run: |
@@ -29,8 +34,7 @@ jobs:
 
     - name: Build
       run: |
-        rustup target add ${{ matrix.os }}
-        cargo build --release --target ${{ matrix.os }}
+        cargo build --release --verbose
 
     - name: Rename artifact
       run: |
