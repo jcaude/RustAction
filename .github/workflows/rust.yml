@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ macos-latest ]
+	target: [ x86_64-apple-darwin, aarch64-apple-darwin ]
 
     steps:
     - name: Checkout code
@@ -33,11 +34,11 @@ jobs:
 
     - name: Build
       run: |
-        cargo build --release --verbose
+        cargo build --release --target ${{ matrix.target }}
 
     - name: Rename artifact
       run: |
-        mv target/release/hello target/release/hello-${{ matrix.os }}
+        mv target/release/hello target/release/hello-${{ matrix.target }}
 
     - name: release
       uses: softprops/action-gh-release@v2
