@@ -2,7 +2,8 @@ name: Rust
 
 on:
   push:
-    branches: [ main ]
+    tag:
+      - 'v*.*.*'
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,10 +26,10 @@ jobs:
       uses: actions-rust-lang/setup-rust-toolchain@v1
 
 
-#    - name: Update release version
-#      run: |
-#        sed "s/^version = \".*\"/version = \"${VERSION:1}\"/" Cargo.toml > .Cargo.toml
-#        mv .Cargo.toml Cargo.toml
+    - name: Update release version
+      run: |
+        sed "s/^version = \".*\"/version = \"${VERSION:1}\"/" Cargo.toml > .Cargo.toml
+        mv .Cargo.toml Cargo.toml
 
     - name: Build
       run: |
