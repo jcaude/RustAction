@@ -25,7 +25,7 @@ jobs:
       uses: actions/setup-rust@v1
       with: |
         rust-version: stable
-	cache: false
+        cache: false
 
     - name: Update release version
       run: |
